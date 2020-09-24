@@ -9,6 +9,9 @@
 uniform float time;
 uniform ivec2 resolution;
 
+struct Material { float ka, kd, ks, a; };
+Material materials[1];
+
 float map(in vec3 p) {
     return length(p - vec3(0., 0., 5.)) - 1.;
 }
@@ -20,14 +23,6 @@ vec3 calcNorm(in vec3 p) {
     float dy = map(p + e.xyx) - d;
     float dz = map(p + e.xxy) - d;
     return normalize(vec3(dx, dy, dz));
-}
-
-vec3 lights(in vec3 p, in vec3 norm, in vec3 color) {
-    float diffuse_intensity  = 0.1;
-
-    diffuse_intensity += 1. * max(0., dot(normalize(vec3(2., 5., -1.) - p), norm));
-
-    return diffuse_intensity * color;
 }
 
 float marching(in vec3 ro, in vec3 rd) {
@@ -50,13 +45,24 @@ vec3 rayCast(in vec3 ro, in vec3 rd) {
         vec3 p = ro + t * rd;
         vec3 norm = calcNorm(p);
 
-        return lights(p, norm, vec3(1.));
+        float diffuse_intensity = 0;
+        float specular_intensity = 0;
+        float ambient_intensity = 0.1;
+        vec3 light_dir = normalize(vec3(2., 5., -1.) - p);
+        diffuse_intensity  += max(0., dot(light_dir, norm));
+        specular_intensity += pow(max(0., dot(reflect(light_dir, norm), rd)), materials[0].a);
+
+        return ambient_intensity * materials[0].ka + 
+                vec3(1.) * diffuse_intensity * materials[0].kd +
+                vec3(1.) * specular_intensity * materials[0].ks;
     }
     return vec3(0.);
 }
 
 out vec4 fragColor;
 void main() {
+    materials[0] = Material(1., 0.6, 0.3, 50.);
+
     vec2 uv = (gl_FragCoord.xy - 0.5*vec2(resolution)) / float(min(resolution.x, resolution.y));
 
     vec3 ro = vec3(0., 0., 0.);

@@ -8,12 +8,16 @@
 
 uniform float time;
 uniform ivec2 resolution;
+uniform vec3 pos;
+uniform vec3 ff;
+uniform vec3 rr;
+uniform vec3 uu;
 
 struct Material { float ka, kd, ks, a; };
 Material materials[1];
 
 float map(in vec3 p) {
-    return length(p - vec3(0., 0., 5.)) - 1.;
+    return length(p - vec3(0., 0., 3.)) - 1.;
 }
 
 vec3 calcNorm(in vec3 p) {
@@ -40,23 +44,24 @@ float marching(in vec3 ro, in vec3 rd) {
 }
 
 vec3 rayCast(in vec3 ro, in vec3 rd) {
+    const vec3 sceneColor = vec3(0.);
     float t = marching(ro, rd);
     if (t < inf - 10) {
         vec3 p = ro + t * rd;
         vec3 norm = calcNorm(p);
 
-        float diffuse_intensity = 0;
-        float specular_intensity = 0;
-        float ambient_intensity = 0.1;
-        vec3 light_dir = normalize(vec3(2., 5., -1.) - p);
-        diffuse_intensity  += max(0., dot(light_dir, norm));
-        specular_intensity += pow(max(0., dot(reflect(light_dir, norm), rd)), materials[0].a);
+        float diffuseIntensity = 0;
+        float specularIntensity = 0;
+        float ambientIntensity = 0.1;
+        vec3 lightDir = normalize(vec3(2., 5., -1.) - p);
+        diffuseIntensity  += max(0., dot(lightDir, norm));
+        specularIntensity += pow(max(0., dot(reflect(lightDir, norm), rd)), materials[0].a);
 
-        return ambient_intensity * materials[0].ka + 
-                vec3(1.) * diffuse_intensity * materials[0].kd +
-                vec3(1.) * specular_intensity * materials[0].ks;
+        return vec3(1.) * vec3(ambientIntensity * materials[0].ka) + 
+               vec3(1.) * vec3(diffuseIntensity * materials[0].kd) +
+               vec3(1.) * vec3(specularIntensity * materials[0].ks);
     }
-    return vec3(0.);
+    return sceneColor;
 }
 
 out vec4 fragColor;
@@ -65,8 +70,8 @@ void main() {
 
     vec2 uv = (gl_FragCoord.xy - 0.5*vec2(resolution)) / float(min(resolution.x, resolution.y));
 
-    vec3 ro = vec3(0., 0., 0.);
-    vec3 rd = normalize(vec3(uv, 1.));
+    vec3 ro = pos;
+    vec3 rd = normalize(uv.x*rr + uv.y*uu + 1.*ff);
 
     fragColor = vec4(rayCast(ro, rd), 1.);
 }

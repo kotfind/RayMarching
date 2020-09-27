@@ -65,10 +65,12 @@ void mainpart(void) {
         const Uint8 *key = SDL_GetKeyboardState(NULL);
 
         float dPos[3] = {0., 0., 0.};
-        if (key[SDL_SCANCODE_W]) dPos[2] -= 5. * dTime;
-        if (key[SDL_SCANCODE_S]) dPos[2] += 5. * dTime;
-        if (key[SDL_SCANCODE_D]) dPos[0] -= 5. * dTime;
-        if (key[SDL_SCANCODE_A]) dPos[0] += 5. * dTime;
+        float speedFactor = 1.;
+        if (key[SDL_SCANCODE_LSHIFT]) speedFactor = 3.;
+        if (key[SDL_SCANCODE_W]) dPos[2] -= 5. * dTime * speedFactor;
+        if (key[SDL_SCANCODE_S]) dPos[2] += 5. * dTime * speedFactor;
+        if (key[SDL_SCANCODE_D]) dPos[0] -= 5. * dTime * speedFactor;
+        if (key[SDL_SCANCODE_A]) dPos[0] += 5. * dTime * speedFactor;
         for (int i = 0; i < 3; ++i) pos[i] += dPos[0]*rr[i] + dPos[1]*uu[i] + dPos[2]*ff[i];
 
         // Set uniforms

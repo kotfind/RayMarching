@@ -12,7 +12,7 @@ mainpart.o: mainpart.cpp
 	g++ -c mainpart.cpp
 
 run: main.out
-	./main.out
+	timeout 60 ./main.out
 
 clean:
 	rm -f main.out

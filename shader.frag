@@ -31,7 +31,7 @@ float map(in vec3 p) {
 
     d = min(d, p.y + 5 + 1.*sin(p.x*1.)*sin(p.z*1.));
     for (float y = -1; y <= 1; y += 1) {
-        vec3 q = vec3(p.x, 1. + mod(p.y + y*5. + 5., 10.) - 5., p.z);
+        vec3 q = vec3(p.x, 2. + mod(p.y + y*5. + 5., 10.) - 5., p.z);
         d = min(d, length(q - vec3(-3., 0., 3.)) - 1. + 0.15*sin(q.x*10)*sin(q.y*10)*sin(q.z*10)*sin(time*3.));
     }
 

@@ -11,7 +11,7 @@ using namespace std;
 SDL_Window *win;
 GLuint program;
 
-int main(int argc, char **argv) {
+int main() {
     // SDL2 init
     SDL_Init(SDL_INIT_VIDEO);
 

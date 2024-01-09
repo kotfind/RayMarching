@@ -1,12 +1,22 @@
 # Ray Marching
-## Compilation
+
+Simple ray marching animated demo written on C++ with SDL2 library.
+
+![Preivew Image](preview.jpg)
+
+## Compile
 `
 make
 `
 
-## Running program
+## Run
 `
 make run
+`
+
+## Clean
+`
+make clean
 `
 
 ## Controls
@@ -14,8 +24,3 @@ make run
 | ---------- | ----------- |
 | W,A,S,D    | movement    |
 | Left Shift | speed up    |
-
-## Cleaning
-`
-make clean
-`
